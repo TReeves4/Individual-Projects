@@ -1,0 +1,90 @@
+import requests
+import lxml
+import bs4
+import re
+from tkinter import *
+from bs4 import BeautifulSoup
+from tkinter import messagebox
+import tkinter as tk
+
+
+labels = []
+carrot_label = []
+    
+def run():
+    name = name_storage.get()
+    url_name = 'https://lolchess.gg/profile/na/' + name.replace(" " , "")
+    res = requests.get(url_name)
+
+
+    profile = BeautifulSoup(res.text, 'lxml')
+    p = profile.select("[class~=placement]")
+    list_profile = []
+    for x in p:
+        list_profile.append(str(x))
+
+
+    string_profile = ''.join([str(elem) for elem in list_profile])
+
+
+    i = 0
+    xnum = 450
+    del labels[:]
+
+    p_array = []
+    win_color = "gray"
+    fgcolor = "black"
+    for n in range(20):
+        y = 50
+        
+        mostrecent1 = str(list(filter(str.isdigit, string_profile))[i])
+        p_array.append(mostrecent1)
+        mr1 = StringVar()
+        mr1.set(p_array[i])
+
+        if p_array[i] == '1':
+            win_color = "gold"
+
+            
+        elif p_array[i] == '2':
+            win_color = "light steel blue"
+            
+        elif p_array[i] == '3':
+            win_color = "dark goldenrod"
+
+        elif p_array[i] == '4':
+            win_color = "royal blue"
+            
+        else:
+            win_color = "dimgray"
+            
+        labels.append(Label(screen, relief="solid",font="Times 22 bold", fg=fgcolor, bg=win_color, width=2, textvariable=mr1))
+        labels[i].place(x=xnum, y=50)
+
+        xnum -=25
+        
+        carrot_label.append(Label(screen, text=">", font="Times 22 bold"))
+        carrot_label[i].place(x=xnum, y=50)
+                      
+        i += 1
+        xnum -= 25
+        if i == 20:
+            break
+        
+screen = Tk()
+screen.title("Recent Placements Window")
+screen.geometry("490x88")
+
+welcome_text = Label(text = "Please enter your TFT ID below" , fg = "white" , bg = "black")
+welcome_text.pack()
+
+entry_button = Button(text = "Done" , fg = "white" , bg = "black" , command = run)
+entry_button.place(x = 10, y = 20)
+
+#refresh_button = Button(text = "rfsh", fg = "white", bg = "black", command = refresh)
+#refresh_button.place(x=200, y = 20)
+
+name_storage = StringVar()
+name = Entry(textvariable = name_storage)
+name.pack()
+screen.mainloop()
