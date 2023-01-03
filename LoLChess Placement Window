@@ -6,85 +6,112 @@ from tkinter import *
 from bs4 import BeautifulSoup
 from tkinter import messagebox
 import tkinter as tk
+#from PIL import ImageTk,Image
 
+def main():
 
-labels = []
-carrot_label = []
+    labels = []
+    carrot_label = []
+
+    def run():
+
+        welcome_text.destroy()
+        entry_button.destroy()
+        name_box.destroy()
+        try: new_name_button.destroy()
+        except NameError: new_search()
+        
+        
+#        new_name_button = Button(text = "New Entry", fg = "white", bg = "black", command = main)
+#        new_name_button.place(x=400, y=20)
+#        new_search()
     
-def run():
-    name = name_storage.get()
-    url_name = 'https://lolchess.gg/profile/na/' + name.replace(" " , "")
-    res = requests.get(url_name)
+        name = name_storage.get()
+        url_name = 'https://lolchess.gg/profile/na/' + name.replace(" " , "")
+        res = requests.get(url_name)
 
+        profile = BeautifulSoup(res.text, 'lxml')
+        p = profile.select("[class~=placement]")
+        list_profile = []
+        for x in p:
+            list_profile.append(str(x))
 
-    profile = BeautifulSoup(res.text, 'lxml')
-    p = profile.select("[class~=placement]")
-    list_profile = []
-    for x in p:
-        list_profile.append(str(x))
+        string_profile = ''.join([str(elem) for elem in list_profile])
 
+        i = 0
+        xnum = 504
+        del labels[:]
 
-    string_profile = ''.join([str(elem) for elem in list_profile])
-
-
-    i = 0
-    xnum = 450
-    del labels[:]
-
-    p_array = []
-    win_color = "gray"
-    fgcolor = "black"
-    for n in range(20):
-        y = 50
+        p_array = []
+        win_color = "dimgray"
+        fgcolor = "black"
+        for n in range(20):
+            y = 50
         
-        mostrecent1 = str(list(filter(str.isdigit, string_profile))[i])
-        p_array.append(mostrecent1)
-        mr1 = StringVar()
-        mr1.set(p_array[i])
+            mostrecent1 = str(list(filter(str.isdigit, string_profile))[i])
+            p_array.append(mostrecent1)
+            mr1 = StringVar()
+            mr1.set(p_array[i])
 
-        if p_array[i] == '1':
-            win_color = "gold"
+            if p_array[i] == '1':
+                win_color = "gold"
+            
+            elif p_array[i] == '2':
+                win_color = "light steel blue"
+            
+            elif p_array[i] == '3':
+                win_color = "dark goldenrod"
 
+            elif p_array[i] == '4':
+                win_color = "royal blue"
             
-        elif p_array[i] == '2':
-            win_color = "light steel blue"
+            else:
+                win_color = "dimgray"
             
-        elif p_array[i] == '3':
-            win_color = "dark goldenrod"
+            labels.append(Label(screen, relief="solid",font="Times 18 bold", fg=fgcolor, bg=win_color, width=2, textvariable=mr1))
+            labels[i].place(x=xnum, y=50)
 
-        elif p_array[i] == '4':
-            win_color = "royal blue"
-            
-        else:
-            win_color = "dimgray"
-            
-        labels.append(Label(screen, relief="solid",font="Times 22 bold", fg=fgcolor, bg=win_color, width=2, textvariable=mr1))
-        labels[i].place(x=xnum, y=50)
-
-        xnum -=25
-        
-        carrot_label.append(Label(screen, text=">", font="Times 22 bold"))
-        carrot_label[i].place(x=xnum, y=50)
+            xnum -=21
+    
+            carrot_label.append(Label(screen, text=">", font="Times 18 bold"))
+            carrot_label[i].place(x=xnum, y=50)
                       
-        i += 1
-        xnum -= 25
-        if i == 20:
-            break
+            i += 1
+            xnum -= 35
+
+            if i == 10:
+                break
+    
+    def new_search():
+        new_name_button = Button(text = "New Entry", fg = "white", bg = "black", command = main)
+        new_name_button.place(x=400, y=20)
         
+    def refresh():
+        run()
+
+    def quick_done(event):
+        run()
+
+    welcome_text = Label(text = "Please enter your TFT ID below" , fg = "white" , bg = "black")
+    welcome_text.pack()
+
+    entry_button = Button(text = "Done" , fg = "white" , bg = "black" , command = run)
+    entry_button.place(x = 140, y = 22)
+
+    refresh_button = Button(text = "Refresh", fg = "white", bg = "black", command = refresh)
+    refresh_button.place(x=470, y = 20)
+
+    name_storage = StringVar()
+    name_box = Entry(textvariable = name_storage)
+    name_box.bind('<Return>',quick_done)
+    name_box.place(x=185, y=25)
+
+#    img = ImageTk.PhotoImage(Image.open(ironrank.png))
+#    panel = tk.Label(screen, image = img)
+#    panel.pack()
+    screen.mainloop()
+
 screen = Tk()
 screen.title("Recent Placements Window")
-screen.geometry("490x88")
-
-welcome_text = Label(text = "Please enter your TFT ID below" , fg = "white" , bg = "black")
-welcome_text.pack()
-
-entry_button = Button(text = "Done" , fg = "white" , bg = "black" , command = run)
-entry_button.place(x = 10, y = 20)
-
-#refresh_button = Button(text = "rfsh", fg = "white", bg = "black", command = refresh)
-#refresh_button.place(x=200, y = 20)
-
-name_storage = StringVar()
-name = Entry(textvariable = name_storage)
-name.pack()
-screen.mainloop()
+screen.geometry("538x82")
+main()
