@@ -1,0 +1,25 @@
+import subprocess
+import time
+
+subprocess.run(['echo', 'Updating firewall settings for FreeIPA configuration'])
+subprocess.run(['echo', 'Opening TCP/UDP 53, TCP 80 443 389 636 88 464, UDP 88 464'])
+subprocess.run(['firewall-cmd', '--permanent', '--add-port=53/tcp', '--add-port=53/udp', '--add-port=80/tcp', '--add-port=443/tcp', '--add-port=389/tcp',
+                '--add-port=636/tcp', '--add-port=88/tcp', '--add-port=88/udp', '--add-port=464/tcp', '--add-port=464/udp', '--add-port=123/udp'])
+subprocess.run(['echo', 'Stopping frewalld.service'])
+subprocess.run(['echo', 'systemctl stop firewalld'])
+time.sleep(1)
+subprocess.run(['systemctl', 'stop', 'firewalld'])
+subprocess.run(['echo', 'Starting firewalld.service'])
+subprocess.run(['echo', 'systemctl start firewalld'])
+time.sleep(1)
+subprocess.run(['systemctl', 'start', 'firewalld'])
+subprocess.run(['echo', 'Showing status of firewalld.service'])
+subprocess.run(['echo', 'systemctl status firewalld'])
+time.sleep(1)
+subprocess.run(['systemctl', 'status', 'firewalld'])
+subprocess.run(['echo', '.', '.'])
+subprocess.run(['echo', 'Showing list of open ports on firewalld.service'])
+subprocess.run(['echo', 'firewall-cmd --list-ports'])
+time.sleep(1)
+subprocess.run(['firewall-cmd', '--list-ports'])
+subprocess.run(['echo', 'DONE!'])
